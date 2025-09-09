@@ -1,0 +1,156 @@
+[gd_scene load_steps=8 format=3 uid="uid://cqh8r5bxu4n8k"]
+
+[ext_resource type="Script" path="res://cars/MobileControls.gd" id="1_mobile"]
+
+[sub_resource type="StyleBoxFlat" id="joystick_bg"]
+bg_color = Color(0.2, 0.2, 0.2, 0.6)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="joystick_knob"]
+bg_color = Color(0.8, 0.8, 0.8, 0.8)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="button_normal"]
+bg_color = Color(0.2, 0.6, 0.2, 0.7)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="button_pressed"]
+bg_color = Color(0.1, 0.8, 0.1, 0.9)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="brake_normal"]
+bg_color = Color(0.8, 0.2, 0.2, 0.7)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="drift_normal"]
+bg_color = Color(0.8, 0.6, 0.2, 0.7)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="MobileControls" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_mobile")
+
+[node name="VirtualJoystick" type="Control" parent="."]
+layout_mode = 0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -170.0
+offset_right = 170.0
+offset_bottom = -30.0
+
+[node name="TouchArea" type="Control" parent="VirtualJoystick"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("joystick_bg")
+
+[node name="Background" type="Panel" parent="VirtualJoystick"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("joystick_bg")
+mouse_filter = 2
+
+[node name="Knob" type="Panel" parent="VirtualJoystick"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 45.0
+offset_right = 95.0
+offset_bottom = 95.0
+theme_override_styles/panel = SubResource("joystick_knob")
+mouse_filter = 2
+
+[node name="AccelerateButton" type="Button" parent="."]
+layout_mode = 0
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -120.0
+offset_right = -30.0
+offset_bottom = -30.0
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("button_normal")
+theme_override_styles/pressed = SubResource("button_pressed")
+text = "GO"
+
+[node name="BrakeButton" type="Button" parent="."]
+layout_mode = 0
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -250.0
+offset_right = -30.0
+offset_bottom = -160.0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("brake_normal")
+theme_override_styles/pressed = SubResource("button_pressed")
+text = "BACK"
+
+[node name="DriftButton" type="Button" parent="."]
+layout_mode = 0
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -170.0
+offset_right = -160.0
+offset_bottom = -80.0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("drift_normal")
+theme_override_styles/pressed = SubResource("button_pressed")
+text = "DRIFT"
+
+[node name="InstructionLabel" type="Label" parent="."]
+layout_mode = 0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 140.0
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "🎮 スマホ操作:
+👈 左: ステアリング
+🚀 緑: アクセル  
+🔴 赤: ブレーキ/バック
+🌀 黄: ドリフト"
+horizontal_alignment = 2
