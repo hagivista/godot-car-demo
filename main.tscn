@@ -1,7 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://bs4xdyx3mglt2"]
+[gd_scene load_steps=11 format=3 uid="uid://bs4xdyx3mglt2"]
 
 [ext_resource type="PackedScene" uid="uid://ci52bv1m15cbs" path="res://cars/Doge.tscn" id="1_mdet3"]
 [ext_resource type="Texture2D" uid="uid://cpwiyoo7664vj" path="res://cars/Models/texture_10.png" id="2_4uho4"]
+[ext_resource type="Script" uid="uid://dd3t4hjinj6qx" path="res://DoorInteraction.gd" id="3_door_script"]
+[ext_resource type="Script" path="res://RespawnSystem.gd" id="4_main_respawn"]
+[ext_resource type="Script" path="res://ManualRespawn.gd" id="5_main_manual_respawn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_b7tlo"]
 sky_top_color = Color(0.419608, 0.54902, 0.619608, 1)
@@ -33,6 +36,12 @@ uv1_triplanar = true
 [sub_resource type="CylinderMesh" id="CylinderMesh_5jeqt"]
 radial_segments = 20
 rings = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(4, 5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_main_respawn"]
+size = Vector3(600, 10, 600)
 
 [node name="Main" type="Node3D"]
 
@@ -118,3 +127,40 @@ size = Vector3(0.3, 0.14044, 10.8715)
 [node name="box10" type="CSGBox3D" parent="CSGCombiner3D/bumps"]
 transform = Transform3D(-0.00242604, 0, -0.999997, 0, 2.55802, 0, 0.999997, 0, -0.00242604, 1.59131, 0.169201, -18.9048)
 size = Vector3(0.3, 0.14044, 10.8715)
+
+[node name="RaceCourseDoor" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 40)
+script = ExtResource("3_door_script")
+
+[node name="DoorMesh" type="CSGBox3D" parent="RaceCourseDoor"]
+material_override = SubResource("StandardMaterial3D_2da72")
+use_collision = true
+size = Vector3(3, 4, 0.5)
+
+[node name="DoorFrame" type="CSGBox3D" parent="RaceCourseDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+material_override = SubResource("StandardMaterial3D_2da72")
+use_collision = true
+size = Vector3(4, 5, 0.2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RaceCourseDoor"]
+shape = SubResource("BoxShape3D_door")
+
+[node name="DoorLabel" type="Label3D" parent="RaceCourseDoor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.3)
+text = "RACE COURSE
+Press E to Enter"
+
+[node name="MainRespawnSystem" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+script = ExtResource("4_main_respawn")
+respawn_position = Vector3(-0.564415, 2.5, -6.30866)
+respawn_rotation = Vector3(0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MainRespawnSystem"]
+shape = SubResource("BoxShape3D_main_respawn")
+
+[node name="MainManualRespawn" type="Node" parent="."]
+script = ExtResource("5_main_manual_respawn")
+respawn_position = Vector3(-0.564415, 2.5, -6.30866)
+respawn_rotation = Vector3(0, 0, 0)
