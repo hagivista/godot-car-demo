@@ -1,9 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://cqj2xm8r4nypl"]
+[gd_scene load_steps=20 format=3 uid="uid://cqj2xm8r4nypl"]
 
 [ext_resource type="PackedScene" uid="uid://ci52bv1m15cbs" path="res://cars/Doge.tscn" id="1_race_car"]
 [ext_resource type="Script" uid="uid://bvwnfm3mjwduy" path="res://ReturnDoorInteraction.gd" id="3_return_door_script"]
 [ext_resource type="Script" uid="uid://cp121mt1ybvx5" path="res://RespawnSystem.gd" id="4_respawn_script"]
-[ext_resource type="Script" path="res://ManualRespawn.gd" id="5_manual_respawn_script"]
+[ext_resource type="Script" uid="uid://bcd4bnvj2dugw" path="res://ManualRespawn.gd" id="5_manual_respawn_script"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_race"]
 sky_top_color = Color(0.1, 0.3, 0.8, 1)
@@ -84,7 +84,7 @@ directional_shadow_split_3 = 0.6
 directional_shadow_max_distance = 500.0
 
 [node name="car" parent="." instance=ExtResource("1_race_car")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 3, -150)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -152.51)
 engine_force_value = 300
 
 [node name="TrackBase" type="Node3D" parent="."]
@@ -361,5 +361,3 @@ shape = SubResource("BoxShape3D_respawn_trigger")
 
 [node name="ManualRespawnManager" type="Node" parent="."]
 script = ExtResource("5_manual_respawn_script")
-respawn_position = Vector3(0, 3, -150)
-respawn_rotation = Vector3(0, 0, 0)
