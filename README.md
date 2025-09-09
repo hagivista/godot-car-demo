@@ -1,34 +1,34 @@
-# Car-Demo
+# カーデモ
 
-A simple car demo project to help you make your own cars in godot 4.0 with mobile support.
+Godot 4.0でモバイル対応の車ゲームを作成するためのシンプルなカーデモプロジェクトです。
 
-Features:
-* Basic car with realistic physics
-* Dynamic camera following
-* GLTF models of cars and wheels
-* Uses inheritance to let you quickly make multiple versions easily
-* **NEW**: Mobile touch controls support
-* **NEW**: Virtual joystick for steering
-* **NEW**: Touch buttons for acceleration, brake, and drift
-* Mobile-optimized rendering settings
+機能:
+* リアルな物理演算を持つ基本的な車
+* ダイナミックカメラフォロー
+* 車両とホイールのGLTFモデル
+* 継承を使用して複数のバージョンを素早く作成可能
+* **新機能**: モバイルタッチコントロール対応
+* **新機能**: ステアリング用バーチャルジョイスティック
+* **新機能**: アクセル、ブレーキ、ドリフト用タッチボタン
+* モバイル最適化レンダリング設定
 
-## Controls
+## 操作方法
 
-### Desktop/PC:
-- Arrow Keys: Steering and acceleration/brake
-- Space: Drift and brake
+### デスクトップ/PC:
+- 矢印キー: ステアリングとアクセル/ブレーキ
+- スペースキー: ドリフトとブレーキ
 
-### Mobile/Touch:
-- Virtual joystick (left side): Steering
-- Green button: Accelerate
-- Red button: Brake/Reverse  
-- Yellow button: Drift
+### モバイル/タッチ:
+- バーチャルジョイスティック（左側）: ステアリング
+- 緑ボタン: アクセル
+- 赤ボタン: ブレーキ/バック
+- 黄ボタン: ドリフト
 
-## Mobile Features:
-- Optimized for mobile devices (Android/iOS)
-- Touch-friendly UI with large buttons
-- Responsive virtual joystick
-- Mobile rendering optimizations
-- Portrait and landscape support
+## モバイル機能:
+- モバイルデバイス（Android/iOS）に最適化
+- 大きなボタンでタッチフレンドリーなUI
+- レスポンシブなバーチャルジョイスティック
+- モバイルレンダリング最適化
+- ポートレート・ランドスケープ対応
        
        

@@ -64,6 +64,10 @@ size = Vector3(1, 1, 10.8715)
 transform = Transform3D(82.3645, 0, 0, 0, 82.3645, 0, 0, 0, 82.3645, 0, 0, 0)
 mesh = SubResource("PlaneMesh_1ypv7")
 
+[node name="GroundBox" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+size = Vector3(500, 1, 500)
+
 [node name="speedBreaker" type="CSGMesh3D" parent="CSGCombiner3D"]
 transform = Transform3D(-7.29339e-05, -4.8781, 0, 0.41788, -0.000851437, 0, 0, 0, 1.39042, 0, 0, 24.1159)
 mesh = SubResource("CylinderMesh_5jeqt")
