@@ -1,8 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://cqj2xm8r4nypl"]
+[gd_scene load_steps=19 format=3 uid="uid://cqj2xm8r4nypl"]
 
 [ext_resource type="PackedScene" uid="uid://ci52bv1m15cbs" path="res://cars/Doge.tscn" id="1_race_car"]
-[ext_resource type="Texture2D" uid="uid://cpwiyoo7664vj" path="res://cars/Models/texture_10.png" id="2_race_texture"]
-[ext_resource type="Script" path="res://ReturnDoorInteraction.gd" id="3_return_door_script"]
+[ext_resource type="Script" uid="uid://bvwnfm3mjwduy" path="res://ReturnDoorInteraction.gd" id="3_return_door_script"]
+[ext_resource type="Script" uid="uid://cp121mt1ybvx5" path="res://RespawnSystem.gd" id="4_respawn_script"]
+[ext_resource type="Script" path="res://ManualRespawn.gd" id="5_manual_respawn_script"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_race"]
 sky_top_color = Color(0.1, 0.3, 0.8, 1)
@@ -27,14 +28,21 @@ sdfgi_y_scale = 2
 glow_enabled = true
 glow_intensity = 0.3
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_track"]
-albedo_color = Color(0.15, 0.15, 0.15, 1)
-roughness = 0.3
-metallic = 0.1
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_grass"]
 albedo_color = Color(0.2, 0.5, 0.1, 1)
 roughness = 0.9
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_grass"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_track"]
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+metallic = 0.1
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ramp"]
+albedo_color = Color(0.3, 0.6, 0.9, 1)
+metallic = 0.3
+roughness = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrier_red"]
 albedo_color = Color(0.9, 0.1, 0.1, 1)
@@ -44,29 +52,24 @@ roughness = 0.4
 albedo_color = Color(0.9, 0.9, 0.9, 1)
 roughness = 0.4
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ramp"]
-albedo_color = Color(0.3, 0.6, 0.9, 1)
-roughness = 0.2
-metallic = 0.3
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_startline"]
-albedo_color = Color(0.9, 0.9, 0.1, 1)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_grass"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_return_door"]
-size = Vector3(4, 5, 2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_checkpoint"]
-size = Vector3(25, 5, 3)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cone"]
+albedo_color = Color(1, 0.5, 0, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_cone"]
 top_radius = 0.0
 bottom_radius = 1.0
-height = 2.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cone"]
-albedo_color = Color(1, 0.5, 0, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_startline"]
+albedo_color = Color(0.9, 0.9, 0.1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_checkpoint"]
+size = Vector3(25, 5, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_return_door"]
+size = Vector3(4, 5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_respawn_trigger"]
+size = Vector3(600, 10, 600)
 
 [node name="RaceCourse" type="Node3D"]
 
@@ -76,10 +79,9 @@ environment = SubResource("Environment_race")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 100, 0)
 shadow_enabled = true
-directional_shadow_max_distance = 500.0
-directional_shadow_split_1 = 0.1
 directional_shadow_split_2 = 0.3
 directional_shadow_split_3 = 0.6
+directional_shadow_max_distance = 500.0
 
 [node name="car" parent="." instance=ExtResource("1_race_car")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 3, -150)
@@ -106,7 +108,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)
 size = Vector3(22, 0.2, 40)
 
 [node name="Turn1" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.2524, 0, -60)
 radius = 50.0
 height = 0.2
 
@@ -241,7 +243,7 @@ use_collision = true
 size = Vector3(1, 4, 40)
 
 [node name="Turn1OuterBarrier" type="CSGCylinder3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 2, -60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, -64.4684, -60)
 material_override = SubResource("StandardMaterial3D_barrier_white")
 use_collision = true
 radius = 62.0
@@ -349,4 +351,15 @@ shape = SubResource("BoxShape3D_return_door")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.3)
 text = "RETURN TO MAIN
 Press E to Exit"
-font_size = 32
+
+[node name="RespawnSystem" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+script = ExtResource("4_respawn_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RespawnSystem"]
+shape = SubResource("BoxShape3D_respawn_trigger")
+
+[node name="ManualRespawnManager" type="Node" parent="."]
+script = ExtResource("5_manual_respawn_script")
+respawn_position = Vector3(0, 3, -150)
+respawn_rotation = Vector3(0, 0, 0)

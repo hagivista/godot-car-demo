@@ -3,6 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://ci52bv1m15cbs" path="res://cars/Doge.tscn" id="1_mdet3"]
 [ext_resource type="Texture2D" uid="uid://cpwiyoo7664vj" path="res://cars/Models/texture_10.png" id="2_4uho4"]
 [ext_resource type="Script" uid="uid://dd3t4hjinj6qx" path="res://DoorInteraction.gd" id="3_door_script"]
+[ext_resource type="Script" path="res://RespawnSystem.gd" id="4_main_respawn"]
+[ext_resource type="Script" path="res://ManualRespawn.gd" id="5_main_manual_respawn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_b7tlo"]
 sky_top_color = Color(0.419608, 0.54902, 0.619608, 1)
@@ -37,6 +39,9 @@ rings = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_door"]
 size = Vector3(4, 5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_main_respawn"]
+size = Vector3(600, 10, 600)
 
 [node name="Main" type="Node3D"]
 
@@ -145,3 +150,17 @@ shape = SubResource("BoxShape3D_door")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.3)
 text = "RACE COURSE
 Press E to Enter"
+
+[node name="MainRespawnSystem" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+script = ExtResource("4_main_respawn")
+respawn_position = Vector3(-0.564415, 2.5, -6.30866)
+respawn_rotation = Vector3(0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MainRespawnSystem"]
+shape = SubResource("BoxShape3D_main_respawn")
+
+[node name="MainManualRespawn" type="Node" parent="."]
+script = ExtResource("5_main_manual_respawn")
+respawn_position = Vector3(-0.564415, 2.5, -6.30866)
+respawn_rotation = Vector3(0, 0, 0)
