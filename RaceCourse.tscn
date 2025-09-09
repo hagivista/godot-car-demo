@@ -1,13 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://cqj2xm8r4nypl"]
+[gd_scene load_steps=18 format=3 uid="uid://cqj2xm8r4nypl"]
 
 [ext_resource type="PackedScene" uid="uid://ci52bv1m15cbs" path="res://cars/Doge.tscn" id="1_race_car"]
 [ext_resource type="Texture2D" uid="uid://cpwiyoo7664vj" path="res://cars/Models/texture_10.png" id="2_race_texture"]
 [ext_resource type="Script" path="res://ReturnDoorInteraction.gd" id="3_return_door_script"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_race"]
-sky_top_color = Color(0.2, 0.4, 0.8, 1)
-sky_horizon_color = Color(0.6, 0.7, 0.9, 1)
-ground_horizon_color = Color(0.6, 0.7, 0.9, 1)
+sky_top_color = Color(0.1, 0.3, 0.8, 1)
+sky_horizon_color = Color(0.5, 0.6, 0.9, 1)
+ground_horizon_color = Color(0.5, 0.6, 0.9, 1)
 
 [sub_resource type="Sky" id="Sky_race"]
 sky_material = SubResource("ProceduralSkyMaterial_race")
@@ -18,33 +18,55 @@ sky = SubResource("Sky_race")
 tonemap_mode = 2
 ssr_enabled = true
 ssao_enabled = true
-ssao_radius = 1.5
-ssao_intensity = 0.6
-ssao_power = 32.7849
+ssao_radius = 2.0
+ssao_intensity = 0.8
+ssao_power = 40.0
 ssil_enabled = true
+sdfgi_enabled = true
 sdfgi_y_scale = 2
 glow_enabled = true
+glow_intensity = 0.3
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_track"]
-albedo_color = Color(0.3, 0.3, 0.3, 1)
-roughness = 0.8
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+roughness = 0.3
+metallic = 0.1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_grass"]
-albedo_texture = ExtResource("2_race_texture")
-uv1_triplanar = true
+albedo_color = Color(0.2, 0.5, 0.1, 1)
+roughness = 0.9
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrier"]
-albedo_color = Color(0.8, 0.2, 0.2, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrier_red"]
+albedo_color = Color(0.9, 0.1, 0.1, 1)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrier_white"]
+albedo_color = Color(0.9, 0.9, 0.9, 1)
+roughness = 0.4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ramp"]
-albedo_color = Color(0.4, 0.6, 0.8, 1)
+albedo_color = Color(0.3, 0.6, 0.9, 1)
+roughness = 0.2
+metallic = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_startline"]
+albedo_color = Color(0.9, 0.9, 0.1, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_grass"]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_barrier"]
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_return_door"]
 size = Vector3(4, 5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_checkpoint"]
+size = Vector3(25, 5, 3)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cone"]
+top_radius = 0.0
+bottom_radius = 1.0
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cone"]
+albedo_color = Color(1, 0.5, 0, 1)
 
 [node name="RaceCourse" type="Node3D"]
 
@@ -52,150 +74,271 @@ size = Vector3(4, 5, 2)
 environment = SubResource("Environment_race")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.80696, 0.183487, -0.56138, 0, 0.950516, 0.310676, 0.590606, -0.250704, 0.767029, 0, 50, 0)
+transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 100, 0)
 shadow_enabled = true
-directional_shadow_max_distance = 300.0
+directional_shadow_max_distance = 500.0
+directional_shadow_split_1 = 0.1
+directional_shadow_split_2 = 0.3
+directional_shadow_split_3 = 0.6
 
 [node name="car" parent="." instance=ExtResource("1_race_car")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 3, -80)
-engine_force_value = 250
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 3, -150)
+engine_force_value = 300
 
-[node name="TrackGeometry" type="CSGCombiner3D" parent="."]
-use_collision = true
+[node name="TrackBase" type="Node3D" parent="."]
 
-[node name="GrassField" type="CSGMesh3D" parent="TrackGeometry"]
-transform = Transform3D(200, 0, 0, 0, 200, 0, 0, 0, 200, 0, -1, 0)
+[node name="GrassField" type="CSGMesh3D" parent="TrackBase"]
+transform = Transform3D(500, 0, 0, 0, 1, 0, 0, 0, 500, 0, -2, 0)
 material_override = SubResource("StandardMaterial3D_grass")
+use_collision = true
 mesh = SubResource("PlaneMesh_grass")
 
-[node name="MainTrackLoop" type="CSGCombiner3D" parent="TrackGeometry"]
+[node name="MainTrack" type="CSGCombiner3D" parent="TrackBase"]
 material_override = SubResource("StandardMaterial3D_track")
-
-[node name="StartFinishStraight" type="CSGBox3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -75)
-size = Vector3(20, 1, 30)
-
-[node name="Turn1" type="CSGCylinder3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.5, -45)
-radius = 25.0
-height = 1.0
-
-[node name="BackStraight" type="CSGBox3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 40, 0.5, -20)
-size = Vector3(50, 1, 20)
-
-[node name="Turn2Banked" type="CSGCylinder3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(0.866025, 0.5, 0, -0.25, 0.433013, 0.866025, 0.433013, -0.75, 0.5, 40, 2, 15)
-radius = 30.0
-height = 1.0
-
-[node name="SideStraight" type="CSGBox3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 15, 0.5, 45)
-size = Vector3(20, 1, 30)
-
-[node name="Turn3" type="CSGCylinder3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.5, 15)
-radius = 25.0
-height = 1.0
-
-[node name="ConnectingStraight" type="CSGBox3D" parent="TrackGeometry/MainTrackLoop"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15, 0.5, -20)
-size = Vector3(50, 1, 20)
-
-[node name="JumpSections" type="CSGCombiner3D" parent="TrackGeometry"]
-material_override = SubResource("StandardMaterial3D_ramp")
-
-[node name="JumpRamp1" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2, -55)
-size = Vector3(18, 2, 8)
-
-[node name="JumpLanding1" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 2, -40)
-size = Vector3(18, 2, 8)
-
-[node name="JumpRamp2" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(0, 0, -1, 0.707107, 0.707107, 0, 0.707107, -0.707107, 0, 55, 3, 0)
-size = Vector3(16, 2, 6)
-
-[node name="JumpLanding2" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(0, 0, -1, -0.707107, 0.707107, 0, 0.707107, 0.707107, 0, 70, 3, 0)
-size = Vector3(16, 2, 6)
-
-[node name="ElevatedSection" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 15, 4, 45)
-size = Vector3(20, 1, 30)
-
-[node name="ElevatedRamp1" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(-1, 0, 0, 0, 0.866025, 0.5, 0, 0.5, -0.866025, 15, 2.5, 32.5)
-size = Vector3(20, 1, 8)
-
-[node name="ElevatedRamp2" type="CSGBox3D" parent="TrackGeometry/JumpSections"]
-transform = Transform3D(-1, 0, 0, 0, 0.866025, -0.5, 0, -0.5, -0.866025, 15, 2.5, 57.5)
-size = Vector3(20, 1, 8)
-
-[node name="TrackBarriers" type="CSGCombiner3D" parent="."]
-material_override = SubResource("StandardMaterial3D_barrier")
 use_collision = true
 
-[node name="InnerBarrier1" type="CSGBox3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2, -75)
-size = Vector3(1, 4, 30)
+[node name="StartFinishStraight" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -140)
+size = Vector3(22, 0.2, 40)
 
-[node name="InnerBarrier2" type="CSGBox3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2, -75)
-size = Vector3(1, 4, 30)
+[node name="Turn1Entry" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)
+size = Vector3(22, 0.2, 40)
 
-[node name="OuterBarrier1" type="CSGBox3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 2, -75)
-size = Vector3(1, 4, 30)
+[node name="Turn1" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -60)
+radius = 50.0
+height = 0.2
 
-[node name="OuterBarrier2" type="CSGBox3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2, -75)
-size = Vector3(1, 4, 30)
+[node name="Turn1Inner" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, -0.5, -60)
+operation = 2
+radius = 28.0
+height = 1.0
 
-[node name="TurnBarriers1" type="CSGCylinder3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, -45)
-radius = 15.0
-height = 4.0
+[node name="BackStraight1" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 90, 0, -60)
+size = Vector3(22, 0.2, 80)
 
-[node name="TurnBarriers2" type="CSGCylinder3D" parent="TrackBarriers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, -45)
+[node name="Turn2BankedEntry" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0.866025, 0, 0.5, -0.05, 1, 0.0866025, -0.5, -0.1, 0.866025, 125, 1, -45)
+size = Vector3(22, 0.2, 25)
+
+[node name="Turn2Banked" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0.866025, 0.5, 0, -0.25, 0.433013, 0.866025, 0.433013, -0.75, 0.5, 140, 3, -20)
 radius = 35.0
+height = 0.2
+
+[node name="Turn2BankedInner" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0.866025, 0.5, 0, -0.25, 0.433013, 0.866025, 0.433013, -0.75, 0.5, 140, 2.5, -20)
+operation = 2
+radius = 13.0
+height = 1.0
+
+[node name="Turn2Exit" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0.5, 0, -0.866025, 0.0866025, 1, 0.05, 0.866025, -0.1, 0.5, 155, 1, 5)
+size = Vector3(22, 0.2, 25)
+
+[node name="SideStraight" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 160, 0, 40)
+size = Vector3(22, 0.2, 50)
+
+[node name="ChicaneEntry" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 145, 0, 75)
+size = Vector3(22, 0.2, 30)
+
+[node name="ChicaneLeft" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 120, 0, 95)
+size = Vector3(22, 0.2, 25)
+
+[node name="ChicaneRight" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 95, 0, 105)
+size = Vector3(22, 0.2, 25)
+
+[node name="ChicaneExit" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 70, 0, 100)
+size = Vector3(22, 0.2, 40)
+
+[node name="Turn3" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 80)
+radius = 40.0
+height = 0.2
+
+[node name="Turn3Inner" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, -0.5, 80)
+operation = 2
+radius = 18.0
+height = 1.0
+
+[node name="Turn4" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 40)
+radius = 35.0
+height = 0.2
+
+[node name="Turn4Inner" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, -0.5, 40)
+operation = 2
+radius = 13.0
+height = 1.0
+
+[node name="BackStraight2" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -45, 0, 40)
+size = Vector3(22, 0.2, 60)
+
+[node name="Turn5" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, 10)
+radius = 45.0
+height = 0.2
+
+[node name="Turn5Inner" type="CSGCylinder3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, -0.5, 10)
+operation = 2
+radius = 23.0
+height = 1.0
+
+[node name="FinalStraight" type="CSGBox3D" parent="TrackBase/MainTrack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -45)
+size = Vector3(22, 0.2, 90)
+
+[node name="JumpSection" type="Node3D" parent="TrackBase"]
+
+[node name="JumpRamp1" type="CSGBox3D" parent="TrackBase/JumpSection"]
+transform = Transform3D(0, 0, 1, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 90, 2, -45)
+material_override = SubResource("StandardMaterial3D_ramp")
+use_collision = true
+size = Vector3(20, 1, 15)
+
+[node name="JumpLanding1" type="CSGBox3D" parent="TrackBase/JumpSection"]
+transform = Transform3D(0, 0, 1, -0.3, 0.953939, 0, -0.953939, -0.3, 0, 90, 2, -75)
+material_override = SubResource("StandardMaterial3D_ramp")
+use_collision = true
+size = Vector3(20, 1, 12)
+
+[node name="JumpRamp2" type="CSGBox3D" parent="TrackBase/JumpSection"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0.353553, 0.866025, 0.353553, -0.612372, 0.5, -0.612372, 125, 3, 75)
+material_override = SubResource("StandardMaterial3D_ramp")
+use_collision = true
+size = Vector3(18, 1, 12)
+
+[node name="JumpLanding2" type="CSGBox3D" parent="TrackBase/JumpSection"]
+transform = Transform3D(-0.707107, 0, 0.707107, -0.212132, 0.866025, -0.453154, -0.674199, -0.5, -0.544331, 135, 2, 95)
+material_override = SubResource("StandardMaterial3D_ramp")
+use_collision = true
+size = Vector3(18, 1, 10)
+
+[node name="TrackBarriers" type="Node3D" parent="."]
+
+[node name="StartBarrierLeft" type="CSGBox3D" parent="TrackBarriers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, -140)
+material_override = SubResource("StandardMaterial3D_barrier_red")
+use_collision = true
+size = Vector3(1, 4, 40)
+
+[node name="StartBarrierRight" type="CSGBox3D" parent="TrackBarriers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, -140)
+material_override = SubResource("StandardMaterial3D_barrier_red")
+use_collision = true
+size = Vector3(1, 4, 40)
+
+[node name="Turn1OuterBarrier" type="CSGCylinder3D" parent="TrackBarriers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 2, -60)
+material_override = SubResource("StandardMaterial3D_barrier_white")
+use_collision = true
+radius = 62.0
 height = 4.0
 
-[node name="BackBarriers" type="CSGBox3D" parent="TrackBarriers"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 50, 2, -20)
-size = Vector3(50, 4, 1)
+[node name="Turn1OuterBarrierInner" type="CSGCylinder3D" parent="TrackBarriers/Turn1OuterBarrier"]
+operation = 2
+radius = 60.0
+height = 5.0
+
+[node name="Turn1InnerBarrier" type="CSGCylinder3D" parent="TrackBarriers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 2, -60)
+material_override = SubResource("StandardMaterial3D_barrier_white")
+use_collision = true
+radius = 18.0
+height = 4.0
+
+[node name="Turn1InnerBarrierInner" type="CSGCylinder3D" parent="TrackBarriers/Turn1InnerBarrier"]
+operation = 2
+radius = 16.0
+height = 5.0
+
+[node name="TrackDecorations" type="Node3D" parent="."]
+
+[node name="TrafficCones" type="Node3D" parent="TrackDecorations"]
+
+[node name="Cone1" type="CSGMesh3D" parent="TrackDecorations/TrafficCones"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, -120)
+material_override = SubResource("StandardMaterial3D_cone")
+mesh = SubResource("CylinderMesh_cone")
+
+[node name="Cone2" type="CSGMesh3D" parent="TrackDecorations/TrafficCones"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, -120)
+material_override = SubResource("StandardMaterial3D_cone")
+mesh = SubResource("CylinderMesh_cone")
+
+[node name="Cone3" type="CSGMesh3D" parent="TrackDecorations/TrafficCones"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1, -100)
+material_override = SubResource("StandardMaterial3D_cone")
+mesh = SubResource("CylinderMesh_cone")
+
+[node name="Cone4" type="CSGMesh3D" parent="TrackDecorations/TrafficCones"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, -100)
+material_override = SubResource("StandardMaterial3D_cone")
+mesh = SubResource("CylinderMesh_cone")
+
+[node name="StartFinishLine" type="Node3D" parent="."]
+
+[node name="StartLine" type="CSGBox3D" parent="StartFinishLine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -160)
+material_override = SubResource("StandardMaterial3D_startline")
+use_collision = true
+size = Vector3(22, 0.05, 2)
+
+[node name="FinishLine" type="CSGBox3D" parent="StartFinishLine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -160)
+material_override = SubResource("StandardMaterial3D_startline")
+size = Vector3(22, 0.1, 0.5)
 
 [node name="CheckpointSystem" type="Node3D" parent="."]
 
 [node name="Checkpoint1" type="Area3D" parent="CheckpointSystem"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -75)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 90, 3, -60)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CheckpointSystem/Checkpoint1"]
+shape = SubResource("BoxShape3D_checkpoint")
 
-[node name="StartLine" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -85)
-material_override = SubResource("StandardMaterial3D_barrier")
-size = Vector3(20, 0.1, 2)
+[node name="Checkpoint2" type="Area3D" parent="CheckpointSystem"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 160, 3, 40)
 
-[node name="FinishLine" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -85)
-material_override = SubResource("StandardMaterial3D_barrier")
-size = Vector3(20, 0.1, 0.5)
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="CheckpointSystem/Checkpoint2"]
+shape = SubResource("BoxShape3D_checkpoint")
+
+[node name="Checkpoint3" type="Area3D" parent="CheckpointSystem"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 70, 3, 100)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="CheckpointSystem/Checkpoint3"]
+shape = SubResource("BoxShape3D_checkpoint")
+
+[node name="Checkpoint4" type="Area3D" parent="CheckpointSystem"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -45, 3, 40)
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="CheckpointSystem/Checkpoint4"]
+shape = SubResource("BoxShape3D_checkpoint")
 
 [node name="ReturnDoor" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, -85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2, -160)
 script = ExtResource("3_return_door_script")
 
 [node name="DoorMesh" type="CSGBox3D" parent="ReturnDoor"]
-material_override = SubResource("StandardMaterial3D_barrier")
+material_override = SubResource("StandardMaterial3D_barrier_red")
 use_collision = true
 size = Vector3(3, 4, 0.5)
 
 [node name="DoorFrame" type="CSGBox3D" parent="ReturnDoor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
-material_override = SubResource("StandardMaterial3D_track")
+material_override = SubResource("StandardMaterial3D_barrier_white")
 use_collision = true
 size = Vector3(4, 5, 0.2)
 

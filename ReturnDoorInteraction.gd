@@ -20,8 +20,8 @@ func _on_body_exited(body):
 		if door_label:
 			door_label.modulate = Color.WHITE
 
-func _input(event):
-	if player_nearby and event.is_action_pressed("ui_accept"):
+func _physics_process(_delta):
+	if player_nearby and (Input.is_action_just_pressed("ui_accept") or Input.is_key_pressed(KEY_E)):
 		_return_to_main()
 
 func _return_to_main():
